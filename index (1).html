@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero العبقرينو</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦸</text></svg>">
+<style>
+:root{--bg:#0d1020;--surface:#171b33;--line:#2c3260;--text:#eef0ff;--muted:#8f95c4;--c1:#4f8cff;--c2:#ff4f6d;--c3:#ffcf3f;--c4:#35e39a}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+body{display:flex;flex-direction:column;min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 16px}
+.home{margin-top:16vh;transition:margin .3s}
+.searched .home{margin-top:20px}
+.logo{text-align:center;line-height:1;direction:ltr}
+.logo b{font-size:clamp(56px,16vw,96px);font-weight:800;letter-spacing:-2px;font-family:Impact,"Arial Black",sans-serif}
+.logo b:nth-child(1){color:var(--c1)}.logo b:nth-child(2){color:var(--c2)}.logo b:nth-child(3){color:var(--c3)}.logo b:nth-child(4){color:var(--c1)}.logo b:nth-child(5){color:var(--c4)}
+.sub{text-align:center;font-size:clamp(22px,6vw,32px);font-weight:700;margin:4px 0 22px;color:var(--text)}
+.searched .logo b{font-size:44px}.searched .sub{font-size:18px;margin-bottom:14px}
+form{width:min(640px,100%);margin:0 auto}
+.box{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:6px 8px 6px 18px}
+.box:focus-within{border-color:var(--c1);box-shadow:0 0 0 3px rgba(79,140,255,.25)}
+input{flex:1;min-width:0;background:none;border:0;outline:0;color:var(--text);font:inherit;font-size:17px;padding:10px 4px}
+input::placeholder{color:var(--muted)}
+button{font:inherit;cursor:pointer;border:0}
+.go{background:var(--c1);color:#fff;border-radius:22px;padding:10px 20px;font-weight:700}
+.go:disabled{opacity:.5}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:18px}
+.chip{background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:18px;padding:8px 14px;font-size:14px}
+.chip:hover,.chip:focus-visible{color:var(--text);border-color:var(--c3)}
+.searched .chips{display:none}
+#out{width:min(720px,100%);margin:22px auto 40px}
+.q{color:var(--muted);font-size:14px;margin:18px 0 6px}
+.a{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px;line-height:1.9;white-space:pre-wrap;font-size:16px;overflow-wrap:anywhere}
+.a.err{border-color:var(--c2)}
+.dots span{display:inline-block;width:8px;height:8px;margin:0 3px;border-radius:50%;background:var(--c3);animation:b 1s infinite}
+.dots span:nth-child(2){animation-delay:.15s}.dots span:nth-child(3){animation-delay:.3s}
+@keyframes b{50%{transform:translateY(-6px);opacity:.4}}
+footer{text-align:center;color:var(--muted);font-size:13px;padding:14px}
+@media (prefers-reduced-motion:reduce){.dots span{animation:none}}
+button:focus-visible{outline:2px solid var(--c3);outline-offset:2px}
+</style>
+</head>
+<body>
+<main id="app">
+  <div class="home">
+    <div class="logo" aria-label="Hero"><b>H</b><b>e</b><b>r</b><b>o</b><b>!</b></div>
+    <div class="sub">العبقرينو</div>
+  </div>
+  <form id="f">
+    <div class="box">
+      <input id="q" type="text" placeholder="اسألني أي شي..." autocomplete="off" aria-label="سؤالك">
+      <button class="go" id="btn" type="submit">اسأل</button>
+    </div>
+    <div class="chips">
+      <button type="button" class="chip">شنو ألعب اليوم؟</button>
+      <button type="button" class="chip">اشرح لي الذكاء الاصطناعي ببساطة</button>
+      <button type="button" class="chip">اقترح فلم أكشن</button>
+      <button type="button" class="chip">نكتة عراقية</button>
+    </div>
+  </form>
+  <div id="out" aria-live="polite"></div>
+</main>
+<footer>Hero العبقرينو &copy; <span id="y"></span></footer>
+<script>
+const SYSTEM = "أنت Hero العبقرينو، مساعد ذكاء اصطناعي ودود وذكي. جاوب بنفس لغة المستخدم، وإذا كتب بالعراقي جاوبه بلهجة عراقية بسيطة. خلّي الجواب واضح ومختصر.";
+const f=document.getElementById('f'),q=document.getElementById('q'),out=document.getElementById('out'),btn=document.getElementById('btn');
+document.getElementById('y').textContent=new Date().getFullYear();
+const history=[];
+
+async function ask(text){
+  document.getElementById('app').classList.add('searched');
+  const qe=document.createElement('div');qe.className='q';qe.textContent=text;
+  const ae=document.createElement('div');ae.className='a';
+  ae.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
+  out.prepend(ae);out.prepend(qe);
+  btn.disabled=true;
+  try{
+    const messages=[{role:'system',content:SYSTEM},...history.slice(-6),{role:'user',content:text}];
+    const r=await fetch('https://text.pollinations.ai/openai',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'openai',messages})
+    });
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d=await r.json();
+    const ans=d.choices[0].message.content;
+    ae.textContent=ans;
+    history.push({role:'user',content:text},{role:'assistant',content:ans});
+  }catch(e){
+    ae.classList.add('err');
+    ae.textContent='ما كدرت أوصل للذكاء الاصطناعي. تأكد من الإنترنت وجرب مرة ثانية.';
+  }
+  btn.disabled=false;
+}
+f.addEventListener('submit',e=>{e.preventDefault();const t=q.value.trim();if(!t)return;q.value='';ask(t)});
+document.querySelectorAll('.chip').forEach(c=>c.addEventListener('click',()=>ask(c.textContent)));
+</script>
+</body>
+</html>
